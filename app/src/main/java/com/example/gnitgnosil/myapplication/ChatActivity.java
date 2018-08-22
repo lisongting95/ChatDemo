@@ -1,5 +1,6 @@
 package com.example.gnitgnosil.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.chad.library.adapter.base.BaseQuickAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +32,12 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     private List<Contacts> converList = new ArrayList<>();
     private RecyclerView converRecyclerView;
-    private ContactsAdapter converAdapter;
+    private TryQuickAdapter converQuickAdapter;
 
     //------------RecyclerView----contacts---------
     private List<Contacts> contactsList = new ArrayList<>();
     private RecyclerView ctacRecyclerView;
-    private ContactsAdapter contactsAdapter;
+    private TryQuickAdapter ctacQuickAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,16 +103,25 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         converRecyclerView = tab01.findViewById(R.id.conversation_recycler_view);
         LinearLayoutManager converLayoutManager = new LinearLayoutManager(this);
         converRecyclerView.setLayoutManager(converLayoutManager);
-        converAdapter = new ContactsAdapter(converList);
-        converRecyclerView.setAdapter(converAdapter);
+
+        converQuickAdapter = new TryQuickAdapter(R.layout.contacts_item,converList);
+        converRecyclerView.setAdapter(converQuickAdapter);
+
+        converQuickAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                Toast.makeText(ChatActivity.this, "onItemClick" + position, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ChatActivity.this,MsgActivity.class);
+                startActivity(intent);
+            }
+        });
 
         //------------------Recycler-------contacts---------------------
         ctacRecyclerView = tab02.findViewById(R.id.contacts_recycler_view);
         LinearLayoutManager ctacLayoutManager = new LinearLayoutManager(this);
         ctacRecyclerView.setLayoutManager(ctacLayoutManager);
-        contactsAdapter = new ContactsAdapter(contactsList);
-        ctacRecyclerView.setAdapter(contactsAdapter);
-
+        ctacQuickAdapter = new TryQuickAdapter(R.layout.contacts_item,contactsList);
+        ctacRecyclerView.setAdapter(ctacQuickAdapter);
 
         views.add(tab01);
         views.add(tab02);
